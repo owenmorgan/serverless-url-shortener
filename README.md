@@ -13,6 +13,10 @@ A Serverless URL Shortener service which allows you to deploy a URL Shortener in
 - Typescript
 - NodeJS
 
+# Architecture
+
+![Arch](readme/arch.png)
+
 # Deployment
 
 For the example domain of `mycomp.click`
