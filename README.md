@@ -39,6 +39,8 @@ _If you require a DNS record to be create for your Cloudfront Distribution_
 
 `serverless deploy --stage=${stage} --region=${region} --acmcertarn ${acmcertarn} --domainname ${domainname} --creatednsrecord "false"`
 
+The CloudFormation Stack outputs the CloudFront domain - direct your short Domain DNS record at this domain name
+
 # With Route53 Record
 
 `npm install`
