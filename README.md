@@ -2,6 +2,10 @@
 
 A Serverless URL Shortener service which allows you to deploy a URL Shortener in AWS using Serverless Framework
 
+For the following example domain of `mycomp.click` to genenerate short urls i.e. `https://mycomp.click/tpXckS`
+
+Supports click analytics visualisations and downloadable CSVs
+
 # Technology Stack
 
 - Cloudfront
@@ -18,8 +22,6 @@ A Serverless URL Shortener service which allows you to deploy a URL Shortener in
 ![Arch](readme/arch.png)
 
 # Deployment
-
-For the example domain of `mycomp.click`
 
 There are two options for deployment:
 
