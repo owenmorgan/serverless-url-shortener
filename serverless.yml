@@ -62,7 +62,7 @@ resources:
     LinkTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: missionlabs-url-shortener-links-${self:custom.stage}
+        TableName: url-shortener-links-${self:custom.stage}
         BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: id
