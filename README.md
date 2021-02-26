@@ -25,13 +25,13 @@ Supports click analytics visualisations and downloadable CSVs
 
 There are two options for deployment:
 
-Pre Requisits
+Prerequisites
 
 - An ACM SSL Ceritificate in us-east-1 for `mycomp.click` - the ARN for the cerificate should be set as the `${acmcertarn}` variable
 
 _If you require a DNS record to be create for your Cloudfront Distribution_
 
-- A Route53 Hosted Zone ID set as the `${r53hosedzoneid}` variable. e.g. `Z2FDTNDATAQYW2`
+- A Route53 Hosted Zone ID set as the `${r53hostedzoneid}` variable. e.g. `Z2FDTNDATAQYW2`
 
 # Without Route53 Record
 
@@ -45,7 +45,7 @@ The CloudFormation Stack outputs the CloudFront domain - direct your short Domai
 
 `npm install`
 
-`serverless deploy --stage=${stage} --region=${region} --acmcertarn ${acmcertarn} --domainname ${domainname} --r53hosedzoneid ${r53hosedzoneid} --creatednsrecord "true"`
+`serverless deploy --stage=${stage} --region=${region} --acmcertarn ${acmcertarn} --domainname ${domainname} --r53hostedzoneid ${r53hostedzoneid} --creatednsrecord "true"`
 
 # Usage
 
