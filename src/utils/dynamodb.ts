@@ -38,3 +38,20 @@ export async function getShortUrl(id: string): Promise<ShortURL | null> {
   } catch (error) {}
   return null;
 }
+
+export async function incrementClick(shortURL: ShortURL): Promise<boolean> {
+  if (!linkTable || linkTable == "") {
+    throw new Error("'LINK_TABLE' Environment Variable Not Set");
+  }
+  shortURL.clicks++;
+  await dynamodb
+    .put({
+      TableName: linkTable,
+      Item: {
+        ...shortURL,
+      },
+    })
+    .promise();
+
+  return true;
+}

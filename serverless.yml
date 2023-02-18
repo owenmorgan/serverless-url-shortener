@@ -8,9 +8,9 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
-  profile: ${opt:profile, default}
-  region: ${opt:region, eu-west-2}
-  stage: dev
+  profile: jelifish
+  region: eu-west-2
+  stage: prod
   environment:
     LINK_TABLE: !Ref LinkTable
   apiGateway:
@@ -19,10 +19,10 @@ provider:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  r53HostedZone: ${opt:r53hosedzoneid}
-  domainName: ${opt:domainname}
-  acmCertArn: ${opt:acmcertarn}
-  createDNSRecord: ${opt:creatednsrecord}
+  r53HostedZone: Z0742791ROS8AL5QGIHK
+  domainName: jeli.fish
+  acmCertArn: arn:aws:acm:us-east-1:077017540186:certificate/6121ef96-a656-4511-a285-780b7e1d029b
+  createDNSRecord: "true"
 
 functions:
   shorten-url:
@@ -51,8 +51,16 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:GetItem
+          - dynamodb:PutItem
         Resource:
           - !GetAtt LinkTable.Arn
+
+  redirect-to-web:
+    handler: src/handlers/redirect-to-web/index.handler
+    events:
+      - http:
+          path: /
+          method: GET
 
 resources:
   Conditions:
