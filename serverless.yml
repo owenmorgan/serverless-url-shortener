@@ -12,7 +12,7 @@ provider:
   region: eu-west-2
   stage: prod
   environment:
-    LINK_TABLE: !Ref LinkTable
+    LINK_TABLE: !Ref LinkTableNew
   apiGateway:
     apiKeys:
       - key-${self:custom.stage}
@@ -39,7 +39,7 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource:
-          - !GetAtt LinkTable.Arn
+          - !GetAtt LinkTableNew.Arn
 
   get-url:
     handler: src/handlers/get-url/index.handler
@@ -53,7 +53,7 @@ functions:
           - dynamodb:GetItem
           - dynamodb:PutItem
         Resource:
-          - !GetAtt LinkTable.Arn
+          - !GetAtt LinkTableNew.Arn
 
   redirect-to-web:
     handler: src/handlers/redirect-to-web/index.handler
@@ -67,16 +67,20 @@ resources:
     CreateRoute53Record: !Equals ["${self:custom.createDNSRecord}", "true"]
 
   Resources:
-    LinkTable:
+    LinkTableNew:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: url-shortener-links-${self:custom.stage}
+        TableName: url-shortener-${self:custom.stage}
         BillingMode: PAY_PER_REQUEST
         KeySchema:
-          - AttributeName: id
+          - AttributeName: type
             KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: type
+            AttributeType: S
+          - AttributeName: sk
             AttributeType: S
         TimeToLiveSpecification:
           AttributeName: expire
@@ -108,7 +112,7 @@ resources:
           Aliases:
             - ${self:custom.domainName}
           DefaultCacheBehavior:
-            CachePolicyId: !Ref CachePolicy
+            CachePolicyId: !Ref OriginRequestPolicy
             OriginRequestPolicyId: !Ref OriginRequestPolicy
             AllowedMethods:
               - DELETE
@@ -141,9 +145,9 @@ resources:
         CachePolicyConfig:
           Comment: CachePolicy
           Name: !Sub "CachePolicy-${AWS::StackName}"
-          DefaultTTL: 86400
-          MaxTTL: 31536000
-          MinTTL: 1
+          DefaultTTL: 0
+          MaxTTL: 0
+          MinTTL: 0
           ParametersInCacheKeyAndForwardedToOrigin:
             CookiesConfig:
               CookieBehavior: none
