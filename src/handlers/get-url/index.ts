@@ -12,7 +12,7 @@ export async function handler(
     if (!su) {
       return _404("id ", id);
     }
-    await incrementClick(su);
+    // await incrementClick(su);
     return redirect(su.longurl);
   } catch (error) {
     console.log((error as Error).message);
