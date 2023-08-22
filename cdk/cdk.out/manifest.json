@@ -1,0 +1,112 @@
+{
+  "version": "29.0.0",
+  "artifacts": {
+    "EdgeLambda.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "EdgeLambda.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "EdgeLambda": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://077017540186/us-east-1",
+      "properties": {
+        "templateFile": "EdgeLambda.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::077017540186:role/cdk-hnb659fds-deploy-role-077017540186-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::077017540186:role/cdk-hnb659fds-cfn-exec-role-077017540186-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-077017540186-us-east-1/63bdf0323ce86741170ee4d743eb54cdbae366b39d596dc77bb043940473eaf5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "EdgeLambda.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::077017540186:role/cdk-hnb659fds-lookup-role-077017540186-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "EdgeLambda.assets"
+      ],
+      "metadata": {
+        "/EdgeLambda/MyFunction/Fn/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyFunctionFnServiceRoleE00F892D"
+          }
+        ],
+        "/EdgeLambda/MyFunction/Fn/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyFunctionFnBB888140"
+          }
+        ],
+        "/EdgeLambda/MyFunction/Fn/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyFunctionFnLogRetentionF875BC00"
+          }
+        ],
+        "/EdgeLambda/MyFunction/Fn/CurrentVersion/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyFunctionFnCurrentVersion3744DBD74d45455bb5864f588269941dcc4e12e1"
+          }
+        ],
+        "/EdgeLambda/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+          }
+        ],
+        "/EdgeLambda/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+          }
+        ],
+        "/EdgeLambda/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+          }
+        ],
+        "/EdgeLambda/LambdaVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaVersion"
+          }
+        ],
+        "/EdgeLambda/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/EdgeLambda/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/EdgeLambda/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "EdgeLambda"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
