@@ -29,7 +29,6 @@ export async function handler(
     su.created = epochDateTime(new Date());
     su.expire = su.expire ? su.expire : expireDateTime();
     su.shorturl = `https://${ownerDomain}/${su.id}`;
-    su.clicks = 0;
 
     await putShortUrl(su);
 

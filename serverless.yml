@@ -8,21 +8,21 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
-  profile: jelifish
-  region: eu-west-2
-  stage: prod
+  profile: ${opt:profile, default}
+  region: ${opt:region, eu-west-2}
+  stage: dev
   environment:
-    LINK_TABLE: !Ref LinkTableNew
+    LINK_TABLE: !Ref LinkTable
   apiGateway:
     apiKeys:
       - key-${self:custom.stage}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  r53HostedZone: Z0742791ROS8AL5QGIHK
-  domainName: jeli.fish
-  acmCertArn: arn:aws:acm:us-east-1:077017540186:certificate/6121ef96-a656-4511-a285-780b7e1d029b
-  createDNSRecord: "true"
+  r53HostedZone: ${opt:r53hosedzoneid}
+  domainName: ${opt:domainname}
+  acmCertArn: ${opt:acmcertarn}
+  createDNSRecord: ${opt:creatednsrecord}
 
 functions:
   shorten-url:
@@ -39,7 +39,7 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource:
-          - !GetAtt LinkTableNew.Arn
+          - !GetAtt LinkTable.Arn
 
   get-url:
     handler: src/handlers/get-url/index.handler
@@ -51,50 +51,24 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:GetItem
-          - dynamodb:PutItem
         Resource:
-          - !GetAtt LinkTableNew.Arn
-
-  register-click:
-    handler: src/handlers/register-click/index.handler
-    events:
-      - http:
-          path: api/click
-          method: POST
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - dynamodb:PutItem
-          - dynamodb:GetItem
-        Resource:
-          - !GetAtt LinkTableNew.Arn
-
-  redirect-to-web:
-    handler: src/handlers/redirect-to-web/index.handler
-    events:
-      - http:
-          path: /
-          method: GET
+          - !GetAtt LinkTable.Arn
 
 resources:
   Conditions:
     CreateRoute53Record: !Equals ["${self:custom.createDNSRecord}", "true"]
 
   Resources:
-    LinkTableNew:
+    LinkTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: url-shortener-${self:custom.stage}
+        TableName: url-shortener-links-${self:custom.stage}
         BillingMode: PAY_PER_REQUEST
         KeySchema:
-          - AttributeName: type
+          - AttributeName: id
             KeyType: HASH
-          - AttributeName: sk
-            KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: type
-            AttributeType: S
-          - AttributeName: sk
+          - AttributeName: id
             AttributeType: S
         TimeToLiveSpecification:
           AttributeName: expire
@@ -126,7 +100,7 @@ resources:
           Aliases:
             - ${self:custom.domainName}
           DefaultCacheBehavior:
-            CachePolicyId: "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+            CachePolicyId: !Ref CachePolicy
             OriginRequestPolicyId: !Ref OriginRequestPolicy
             AllowedMethods:
               - DELETE
@@ -138,10 +112,6 @@ resources:
               - PUT
             TargetOriginId: ${self:service}-${self:provider.region}-api-gw
             ViewerProtocolPolicy: redirect-to-https
-            LambdaFunctionAssociations:
-              - EventType: viewer-request
-                LambdaFunctionARN: "arn:aws:lambda:us-east-1:077017540186:function:EdgeLambda-MyFunctionFnBB888140-X1C7xqte0cEW:4"
-                IncludeBody: true
 
     OriginRequestPolicy:
       Type: AWS::CloudFront::OriginRequestPolicy
@@ -157,25 +127,25 @@ resources:
           QueryStringsConfig:
             QueryStringBehavior: none
 
-    # CachePolicy:
-    #   Type: AWS::CloudFront::CachePolicy
-    #   Properties:
-    #     CachePolicyConfig:
-    #       Comment: CachePolicy
-    #       Name: !Sub "CachePolicy-${AWS::StackName}"
-    #       DefaultTTL: 0
-    #       MaxTTL: 0
-    #       MinTTL: 0
-    #       ParametersInCacheKeyAndForwardedToOrigin:
-    #         CookiesConfig:
-    #           CookieBehavior: none
-    #         EnableAcceptEncodingGzip: true
-    #         HeadersConfig:
-    #           HeaderBehavior: whitelist
-    #           Headers:
-    #             - x-api-key
-    #         QueryStringsConfig:
-    #           QueryStringBehavior: none
+    CachePolicy:
+      Type: AWS::CloudFront::CachePolicy
+      Properties:
+        CachePolicyConfig:
+          Comment: CachePolicy
+          Name: !Sub "CachePolicy-${AWS::StackName}"
+          DefaultTTL: 86400
+          MaxTTL: 31536000
+          MinTTL: 1
+          ParametersInCacheKeyAndForwardedToOrigin:
+            CookiesConfig:
+              CookieBehavior: none
+            EnableAcceptEncodingGzip: true
+            HeadersConfig:
+              HeaderBehavior: whitelist
+              Headers:
+                - x-api-key
+            QueryStringsConfig:
+              QueryStringBehavior: none
 
     DNSRecord:
       Type: AWS::Route53::RecordSetGroup
