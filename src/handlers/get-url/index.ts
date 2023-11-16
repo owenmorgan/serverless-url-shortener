@@ -1,7 +1,7 @@
 import { redirect, _500, _404 } from "../../utils/api";
 import { APIGatewayEvent } from "aws-lambda";
 import { ShortURL } from "../../types/shorturl";
-import { getShortUrl } from "../../utils/dynamodb";
+import { getShortUrl, incrementClick, putShortUrl } from "../../utils/dynamodb";
 
 export async function handler(
   ev: APIGatewayEvent
@@ -12,6 +12,7 @@ export async function handler(
     if (!su) {
       return _404("id ", id);
     }
+    // await incrementClick(su);
     return redirect(su.longurl);
   } catch (error) {
     console.log((error as Error).message);

@@ -4,4 +4,5 @@ export interface ShortURL {
   created?: number;
   expire?: number;
   shorturl?: string;
+  clicks: number;
 }
